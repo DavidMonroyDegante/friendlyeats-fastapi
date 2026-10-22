@@ -78,3 +78,34 @@ def delete(restaurant_id: str):
     document.delete()
 
     return True
+
+
+
+
+
+# Filtrar restaurantes por ciudad, categoría y precio
+def filter_restaurants(
+    city: str | None = None,
+    category: str | None = None,
+    price: int | None = None
+):
+    query = db.collection(COLLECTION_NAME)
+
+    if city:
+        query = query.where("city", "==", city)
+
+    if category:
+        query = query.where("category", "==", category)
+
+    if price is not None:
+        query = query.where("price", "==", price)
+
+    restaurants = []
+
+    for document in query.stream():
+        data = document.to_dict()
+        data["id"] = document.id
+
+        restaurants.append(Restaurant(**data))
+
+    return restaurants
