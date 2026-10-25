@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}FriendlyEats{% endblock %}</title>
+
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <header class="navbar">
+        <a href="/" class="logo">FriendlyEats</a>
+
+        <nav>
+            <a href="/">Restaurantes</a>
+            <a href="/restaurant/new">Registrar restaurante</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p>FriendlyEats · Descubre restaurantes y sabores.</p>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

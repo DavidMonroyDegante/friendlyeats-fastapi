@@ -1,0 +1,49 @@
+
+{% extends "base.html" %}
+
+{% block title %}Detalles del restaurante | FriendlyEats{% endblock %}
+
+{% block content %}
+
+<section class="restaurant-section">
+    <a href="/" class="restaurant-link">← Volver a restaurantes</a>
+
+    <div id="detailMessage" class="message" role="status"></div>
+
+    <div id="restaurantDetail"
+         data-restaurant-id="{{ restaurant_id }}">
+
+        <p id="loadingMessage">Cargando información del restaurante...</p>
+
+        <div id="detailContent" hidden>
+            <img id="detailImage"
+                 class="restaurant-image"
+                 alt="Fotografía del restaurante">
+
+            <div class="restaurant-info">
+                <h1 id="detailName"></h1>
+
+                <p id="detailCategory"></p>
+                <p id="detailCity"></p>
+                <p id="detailPrice"></p>
+                <p id="detailRating" class="restaurant-rating"></p>
+
+                <div class="filter-actions">
+                    <button id="editRestaurant" class="btn-primary">
+                        Editar restaurante
+                    </button>
+
+                    <button id="deleteRestaurant" class="btn-secondary">
+                        Eliminar restaurante
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/restaurant_detail.js"></script>
+{% endblock %}

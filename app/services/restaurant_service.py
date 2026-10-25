@@ -48,3 +48,11 @@ def filter_restaurants(
         category=category,
         price=price
     )
+
+
+
+
+
+# Obtener opciones disponibles para los filtros
+def get_filter_options():
+    return restaurant_repository.get_filter_options()

@@ -1,0 +1,72 @@
+
+{% extends "base.html" %}
+
+{% block title %}{{ "Editar" if mode == "edit" else "Registrar" }} restaurante | FriendlyEats{% endblock %}
+
+{% block content %}
+<section class="filters form-container">
+    <a href="/" class="restaurant-link">← Volver a restaurantes</a>
+
+    <h1 id="formTitle">
+        {{ "Editar restaurante" if mode == "edit" else "Registrar restaurante" }}
+    </h1>
+
+    <p>Completa los datos del restaurante.</p>
+
+    <div id="formMessage" class="message" role="status"></div>
+
+    <form id="restaurantForm"
+          data-restaurant-id="{{ restaurant_id }}"
+          class="restaurant-form">
+
+        <div class="form-group">
+            <label for="name">Nombre del restaurante *</label>
+            <input type="text" id="name" name="name"
+                   maxlength="100" required>
+        </div>
+
+        <div class="form-group">
+            <label for="category">Categoría *</label>
+            <input type="text" id="category" name="category"
+                   maxlength="50" placeholder="Ej. Mexicana"
+                   required>
+        </div>
+
+        <div class="form-group">
+            <label for="city">Ciudad *</label>
+            <input type="text" id="city" name="city"
+                   maxlength="50" placeholder="Ej. Puebla"
+                   required>
+        </div>
+
+        <div class="form-group">
+            <label for="price">Nivel de precio *</label>
+            <select id="price" name="price" required>
+                <option value="">Selecciona un precio</option>
+                <option value="1">$ Económico</option>
+                <option value="2">$$ Moderado</option>
+                <option value="3">$$$ Elevado</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="photoUrl">URL de la fotografía</label>
+            <input type="url" id="photoUrl" name="photoUrl"
+                   placeholder="https://ejemplo.com/foto.jpg">
+            <small>Este campo es opcional.</small>
+        </div>
+
+        <div class="filter-actions">
+            <button type="submit" id="saveButton" class="btn-primary">
+                Guardar restaurante
+            </button>
+
+            <a href="/" class="btn-secondary">Cancelar</a>
+        </div>
+    </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/restaurant_form.js"></script>
+{% endblock %}

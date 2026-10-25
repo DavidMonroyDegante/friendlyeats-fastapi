@@ -1,0 +1,81 @@
+﻿
+{% extends "base.html" %}
+
+{% block title %}Restaurantes | FriendlyEats{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <p class="eyebrow">DESCUBRE TU PRÃ“XIMO LUGAR FAVORITO</p>
+    <h1>Encuentra restaurantes para cada ocasiÃ³n</h1>
+    <p>Explora opciones, consulta sus calificaciones y encuentra
+       lugares que se adapten a tus gustos.</p>
+</section>
+
+<section class="filters">
+    <h2>Buscar restaurantes</h2>
+
+    <form id="filterForm" class="filter-form">
+        <div class="form-group">
+            <label for="city">Ciudad</label>
+            <select id="city" name="city">
+                <option value="">Todas las ciudades</option>
+            </select>
+        </div>
+
+
+        <div class="form-group">
+            <label for="category">CategorÃ­a</label>
+            <select id="category" name="category">
+                <option value="">Todas las categorÃ­as</option>
+            </select>
+        </div>
+
+
+        <div class="form-group">
+            <label for="price">Precio</label>
+            <select id="price" name="price">
+                <option value="">Todos los precios</option>
+                <option value="1">$ EconÃ³mico</option>
+                <option value="2">$$ Moderado</option>
+                <option value="3">$$$ Elevado</option>
+            </select>
+        </div>
+
+        <div class="filter-actions">
+            <button type="submit" class="btn-primary">
+                Buscar
+            </button>
+
+            <button type="button" id="clearFilters" class="btn-secondary">
+                Limpiar
+            </button>
+        </div>
+    </form>
+</section>
+
+<section class="restaurant-section">
+    <div class="section-heading">
+        <div>
+            <h2>Restaurantes</h2>
+            <p id="resultsCount">Cargando restaurantes...</p>
+        </div>
+        <div id="pagination" class="pagination"></div>
+
+        <a href="/restaurant/new" class="btn-primary">
+            + Registrar
+        </a>
+    </div>
+
+    <div id="message" class="message" role="status"></div>
+
+    <div id="restaurantsList" class="restaurant-grid">
+        <p>Cargando restaurantes...</p>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/restaurants.js"></script>
+{% endblock %}

@@ -109,3 +109,35 @@ def filter_restaurants(
         restaurants.append(Restaurant(**data))
 
     return restaurants
+
+
+
+
+
+
+
+
+
+# Obtener las ciudades y categorías disponibles
+def get_filter_options():
+    cities = set()
+    categories = set()
+
+    documents = db.collection(COLLECTION_NAME).stream()
+
+    for document in documents:
+        data = document.to_dict()
+
+        city = data.get("city")
+        category = data.get("category")
+
+        if city and city.strip():
+            cities.add(city.strip())
+
+        if category and category.strip():
+            categories.add(category.strip())
+
+    return {
+        "cities": sorted(cities, key=str.lower),
+        "categories": sorted(categories, key=str.lower)
+    }

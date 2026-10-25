@@ -40,6 +40,16 @@ def filter_restaurants(
 
 
 
+
+# Obtener ciudades y categorías para los filtros
+@router.get("/filter-options")
+def get_filter_options():
+    return restaurant_service.get_filter_options()
+
+
+
+
+
 # Obtener un restaurante por su ID
 @router.get("/{restaurant_id}", response_model=RestaurantResponse)
 def get_restaurant(restaurant_id: str):
