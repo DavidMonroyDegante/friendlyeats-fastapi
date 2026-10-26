@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Response, status
 
 from app.domain.schemas import RestaurantCreate, RestaurantUpdate, RestaurantResponse
 from app.services import restaurant_service
@@ -10,10 +10,30 @@ router = APIRouter(
 )
 
 
-# Obtener todos los restaurantes
+# Obtener restaurantes con paginación y ordenamiento
 @router.get("/", response_model=list[RestaurantResponse])
-def get_restaurants():
-    return restaurant_service.get_all_restaurants()
+def get_restaurants(
+    limit: int = 20,
+    start_after: str | None = None,
+    order_by: str = "name"
+):
+    if limit < 1 or limit > 100:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="El límite debe estar entre 1 y 100"
+        )
+
+    if order_by not in ("name", "avgRating"):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="El orden debe ser name o avgRating"
+        )
+
+    return restaurant_service.get_paginated_restaurants(
+        limit=limit,
+        start_after=start_after,
+        order_by=order_by
+    )
 
 
 
@@ -84,8 +104,26 @@ def update_restaurant(restaurant_id: str, data: RestaurantUpdate):
     return restaurant
 
 
+
+# Actualizar parcialmente un restaurante
+@router.patch("/{restaurant_id}", response_model=RestaurantResponse)
+def patch_restaurant(restaurant_id: str, data: RestaurantUpdate):
+    restaurant = restaurant_service.update_restaurant(restaurant_id, data)
+
+    if restaurant is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Restaurante no encontrado"
+        )
+
+    return restaurant
+
+
 # Eliminar un restaurante
-@router.delete("/{restaurant_id}")
+@router.delete(
+    "/{restaurant_id}",
+    status_code=status.HTTP_204_NO_CONTENT
+)
 def delete_restaurant(restaurant_id: str):
     deleted = restaurant_service.delete_restaurant(restaurant_id)
 
@@ -95,6 +133,4 @@ def delete_restaurant(restaurant_id: str):
             detail="Restaurante no encontrado"
         )
 
-    return {
-        "mensaje": "Restaurante eliminado correctamente"
-    }
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

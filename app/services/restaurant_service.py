@@ -8,6 +8,20 @@ def get_all_restaurants():
     return restaurant_repository.get_all()
 
 
+
+# Obtener restaurantes paginados
+def get_paginated_restaurants(
+    limit: int = 20,
+    start_after: str | None = None,
+    order_by: str = "name"
+):
+    return restaurant_repository.get_paginated(
+        limit=limit,
+        start_after=start_after,
+        order_by=order_by
+    )
+
+
 # Obtener un restaurante por su ID
 def get_restaurant_by_id(restaurant_id: str):
     return restaurant_repository.get_by_id(restaurant_id)

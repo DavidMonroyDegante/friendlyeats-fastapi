@@ -21,6 +21,44 @@ def get_all():
     return restaurants
 
 
+
+# Obtener restaurantes con paginación y ordenamiento
+def get_paginated(
+    limit: int = 20,
+    start_after: str | None = None,
+    order_by: str = "name"
+):
+    if order_by not in ("name", "avgRating"):
+        raise ValueError("El orden debe ser name o avgRating")
+
+    query = (
+        db.collection(COLLECTION_NAME)
+        .order_by(order_by)
+        .limit(limit)
+    )
+
+    if start_after:
+        last_document = (
+            db.collection(COLLECTION_NAME)
+            .document(start_after)
+            .get()
+        )
+
+        if not last_document.exists:
+            return []
+
+        query = query.start_after(last_document)
+
+    restaurants = []
+
+    for document in query.stream():
+        data = document.to_dict()
+        data["id"] = document.id
+        restaurants.append(Restaurant(**data))
+
+    return restaurants
+
+
 # Obtener un restaurante por su ID
 def get_by_id(restaurant_id: str):
     document = (

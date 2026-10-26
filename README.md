@@ -127,13 +127,29 @@ uvicorn app.main:app --reload
 
 | Método | Endpoint | Función |
 |---|---|---|
-| GET | `/api/v1/restaurants/` | Consultar restaurantes |
-| GET | `/api/v1/restaurants/filter` | Filtrar restaurantes |
-| GET | `/api/v1/restaurants/filter-options` | Obtener ciudades y categorías |
-| GET | `/api/v1/restaurants/{restaurant_id}` | Consultar un restaurante |
+| GET | `/health` | Verificar que la aplicación está funcionando |
+| GET | `/api/v1/restaurants/` | Consultar restaurantes con paginación |
+| GET | `/api/v1/restaurants/filter` | Filtrar por ciudad, categoría y precio |
+| GET | `/api/v1/restaurants/filter-options` | Obtener ciudades y categorías disponibles |
+| GET | `/api/v1/restaurants/{restaurant_id}` | Consultar los detalles de un restaurante |
 | POST | `/api/v1/restaurants/` | Registrar un restaurante |
 | PUT | `/api/v1/restaurants/{restaurant_id}` | Actualizar un restaurante |
-| DELETE | `/api/v1/restaurants/{restaurant_id}` | Eliminar un restaurante |
+| PATCH | `/api/v1/restaurants/{restaurant_id}` | Actualizar únicamente los campos enviados |
+| DELETE | `/api/v1/restaurants/{restaurant_id}` | Eliminar un restaurante; devuelve 204 si se elimina correctamente |
+
+### Parámetros de paginación
+
+El endpoint de consulta admite los siguientes parámetros:
+- `limit`: cantidad máxima de restaurantes por consulta. Su valor predeterminado es 20 y admite valores de 1 a 100.
+- `start_after`: identificador del último restaurante de la página anterior, para continuar la consulta.
+- `order_by`: campo de ordenamiento. Admite `name` o `avgRating`; por defecto utiliza `name`.
+
+Ejemplo:
+
+`/api/v1/restaurants/?limit=5&order_by=name`
+
+La API utiliza paginación sobre las consultas a Firestore. Por separado, la interfaz web muestra cinco restaurantes por página.
+
 
 ## Pruebas automáticas
 
@@ -143,10 +159,16 @@ Con el entorno virtual activo, ejecuta:
 pytest -v
 ```
 
-Las pruebas verifican páginas web, consulta de restaurantes, opciones de filtros y respuestas de error de la API.
+Las pruebas verifican diferentes comportamientos de la aplicación, incluyendo páginas web, consultas y validaciones de la API, actualización parcial mediante PATCH, eliminación con respuesta 204 y validación de los parámetros de paginación.
+
+En la última ejecución se obtuvieron 15 pruebas aprobadas.
+
+
 
 ## Estado del proyecto
 
-La interfaz web, las operaciones CRUD y los filtros están implementados. La suite inicial de pruebas contiene ocho pruebas aprobadas en el entorno local.
+El proyecto cuenta con una interfaz web para listar, filtrar, consultar detalles, registrar, editar y eliminar restaurantes. La API REST está conectada con Firestore y dispone de operaciones CRUD, validación de datos, filtros y paginación.
 
-La paginación actual se realiza en la interfaz después de consultar los resultados de la API; no corresponde a paginación del lado de Firestore.
+La interfaz web muestra cinco restaurantes por página, mientras que la API permite consultar hasta 100 restaurantes por solicitud, con un límite predeterminado de 20.
+
+La suite de pruebas contiene 15 pruebas aprobadas en la última ejecución local. El proyecto utiliza el emulador de Firestore para facilitar el desarrollo y las pruebas sin depender de una base de datos de producción.

@@ -67,3 +67,11 @@ def restaurant_detail(request: Request, restaurant_id: str):
             "restaurant_id": restaurant_id
         }
     )
+
+
+
+
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
