@@ -217,3 +217,152 @@ def test_api_pagination_invalid_order():
     )
 
     assert response.status_code == 422
+
+# ==========================================
+# PRUEBAS DE CREACION (POST)
+# ==========================================
+
+def test_api_create_restaurant(monkeypatch):
+    def fake_create(data):
+        return {
+            "id": "restaurante_nuevo",
+            "name": data.name,
+            "category": data.category,
+            "city": data.city,
+            "price": data.price,
+            "photoUrl": data.photoUrl,
+            "avgRating": 0,
+            "numRatings": 0
+        }
+
+    monkeypatch.setattr(
+        "app.api.v1.restaurants.restaurant_service.create_restaurant",
+        fake_create
+    )
+
+    response = client.post(
+        "/api/v1/restaurants/",
+        json={
+            "name": "Tacos de prueba",
+            "category": "Mexicana",
+            "city": "Puebla",
+            "price": 2
+        }
+    )
+
+    assert response.status_code == 201
+    assert response.json()["id"] == "restaurante_nuevo"
+    assert response.json()["name"] == "Tacos de prueba"
+
+
+def test_api_create_restaurant_invalid_price():
+    response = client.post(
+        "/api/v1/restaurants/",
+        json={
+            "name": "Tacos de prueba",
+            "category": "Mexicana",
+            "city": "Puebla",
+            "price": 4
+        }
+    )
+
+    assert response.status_code == 422
+
+
+# ==========================================
+# PRUEBAS DE ACTUALIZACION (PUT)
+# ==========================================
+
+def test_api_update_restaurant(monkeypatch):
+    def fake_update(restaurant_id, data):
+        return {
+            "id": restaurant_id,
+            "name": data.name,
+            "category": data.category,
+            "city": data.city,
+            "price": data.price,
+            "photoUrl": data.photoUrl,
+            "avgRating": 0,
+            "numRatings": 0
+        }
+
+    monkeypatch.setattr(
+        "app.api.v1.restaurants.restaurant_service.update_restaurant",
+        fake_update
+    )
+
+    response = client.put(
+        "/api/v1/restaurants/restaurante_prueba",
+        json={
+            "name": "Tacos actualizados",
+            "category": "Mexicana",
+            "city": "Puebla",
+            "price": 2
+        }
+    )
+
+    assert response.status_code == 200
+    assert response.json()["name"] == "Tacos actualizados"
+
+
+def test_api_update_restaurant_not_found(monkeypatch):
+    monkeypatch.setattr(
+        "app.api.v1.restaurants.restaurant_service.update_restaurant",
+        lambda restaurant_id, data: None
+    )
+
+    response = client.put(
+        "/api/v1/restaurants/inexistente",
+        json={"name": "Tacos actualizados"}
+    )
+
+    assert response.status_code == 404
+
+
+# ==========================================
+# PRUEBA DE CONSULTA POR ID
+# ==========================================
+
+def test_api_get_existing_restaurant(monkeypatch):
+    def fake_get(restaurant_id):
+        return {
+            "id": restaurant_id,
+            "name": "Tacos de prueba",
+            "category": "Mexicana",
+            "city": "Puebla",
+            "price": 2,
+            "photoUrl": None,
+            "avgRating": 4.5,
+            "numRatings": 10
+        }
+
+    monkeypatch.setattr(
+        "app.api.v1.restaurants.restaurant_service.get_restaurant_by_id",
+        fake_get
+    )
+
+    response = client.get(
+        "/api/v1/restaurants/restaurante_prueba"
+    )
+
+    assert response.status_code == 200
+    assert response.json()["name"] == "Tacos de prueba"
+    assert response.json()["avgRating"] == 4.5
+
+
+# ==========================================
+# PRUEBA DE VALIDACION DE NOMBRE
+# ==========================================
+
+def test_api_create_restaurant_empty_name():
+    response = client.post(
+        "/api/v1/restaurants/",
+        json={
+            "name": "",
+            "category": "Mexicana",
+            "city": "Puebla",
+            "price": 2
+        }
+    )
+
+    assert response.status_code == 422
